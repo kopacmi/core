@@ -39,7 +39,8 @@ use OC\Core\Controller\RolesController;
 use OC\Core\Controller\TokenController;
 use OC\Core\Controller\TwoFactorChallengeController;
 use OC\Core\Controller\UserController;
-use OC\Core\Notification\Notifier;
+use OC\Core\Controller\SyncController;
+use OC\User\SyncService;
 use OC_Defaults;
 use OCP\AppFramework\App;
 use OCP\BackgroundJob\IJobList;
@@ -47,7 +48,6 @@ use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IServerContainer;
 use OCP\Util;
-use OCP\Notification\Events\RegisterNotifierEvent;
 
 /**
  * Class Application
@@ -164,6 +164,14 @@ class Application extends App {
 				$c->query(IJobList::class)
 			);
 		});
+		$container->registerService('SyncController', function (SimpleContainer $c) {
+			return new SyncController(
+				$c->query('AppName'),
+				$c->query('Request'),
+				$c->query(SyncService::class),
+				$c->query(IConfig::class)
+			);
+		});
 
 		/**
 		 * Core class wrappers
@@ -215,15 +223,6 @@ class Application extends App {
 		});
 		$container->registerService('TwoFactorAuthManager', static function (SimpleContainer $c) {
 			return $c->query('ServerContainer')->getTwoFactorAuthManager();
-		});
-	}
-
-	public function registerNotifier() {
-		$container = $this->getContainer();
-		$dispatcher = $container->getServer()->getEventDispatcher();
-		$dispatcher->addListener(RegisterNotifierEvent::NAME, function (RegisterNotifierEvent $event) use ($container) {
-			$l10n = $container->getServer()->getL10N('core');
-			$event->registerNotifier($container->query(Notifier::class), 'core', $l10n->t('Core'));
 		});
 	}
 }
