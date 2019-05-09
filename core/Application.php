@@ -169,6 +169,7 @@ class Application extends App {
 				$c->query('AppName'),
 				$c->query('Request'),
 				$c->query(SyncService::class),
+				$c->query('TimeFactory'),
 				$c->query(IConfig::class)
 			);
 		});
