@@ -112,13 +112,13 @@ class ManagerTest extends TestCase {
 			$this->config, $this->platform);
 	}
 
-	protected function expectClearCache() {
+	protected function expectClearCache(): void {
 		$this->cache->expects($this->once())
 			->method('clear')
 			->with('listApps');
 	}
 
-	public function testEnableApp() {
+	public function testEnableApp(): void {
 		$this->expectClearCache();
 		// making sure "files_trashbin" is disabled
 		if ($this->manager->isEnabledForUser('files_trashbin')) {
@@ -130,7 +130,7 @@ class ManagerTest extends TestCase {
 
 	/**
 	 */
-	public function testEnableSecondAppTheme() {
+	public function testEnableSecondAppTheme(): void {
 		$this->expectException(\OCP\App\AppManagerException::class);
 
 		$appThemeName = 'theme-one';
@@ -158,7 +158,7 @@ class ManagerTest extends TestCase {
 		$manager->enableApp($appThemeName);
 	}
 
-	public function testEnableTheSameThemeTwice() {
+	public function testEnableTheSameThemeTwice(): void {
 		$appThemeName = 'theme-one';
 		$manager = $this->getMockBuilder(AppManager::class)
 			->setMethods(['isTheme', 'getAppInfo', 'getAppPath', 'getInstalledApps'])
@@ -192,7 +192,7 @@ class ManagerTest extends TestCase {
 		$manager->enableApp($appThemeName);
 	}
 
-	public function testDisableApp() {
+	public function testDisableApp(): void {
 		$this->expectClearCache();
 		$this->manager->disableApp('files_trashbin');
 		$this->assertEquals('no', $this->appConfig->getValue('files_trashbin', 'enabled', 'no'));
@@ -200,7 +200,7 @@ class ManagerTest extends TestCase {
 
 	/**
 	 */
-	public function testNotEnableIfNotInstalled() {
+	public function testNotEnableIfNotInstalled(): void {
 		$this->expectException(\Exception::class);
 
 		$this->manager->enableApp('some_random_name_which_i_hope_is_not_an_app');
@@ -209,7 +209,7 @@ class ManagerTest extends TestCase {
 		));
 	}
 
-	public function testEnableAppForGroups() {
+	public function testEnableAppForGroups(): void {
 		$groups = [
 			new Group('group1', [], null, $this->eventDispatcher),
 			new Group('group2', [], null, $this->eventDispatcher)
@@ -237,7 +237,7 @@ class ManagerTest extends TestCase {
 	 * @param array $appInfo
 	 * @throws \Exception
 	 */
-	public function testEnableAppForGroupsAllowedTypes(array $appInfo) {
+	public function testEnableAppForGroupsAllowedTypes(array $appInfo): void {
 		$groups = [
 			new Group('group1', [], null, $this->eventDispatcher),
 			new Group('group2', [], null, $this->eventDispatcher)
@@ -281,7 +281,7 @@ class ManagerTest extends TestCase {
 	 * @param string $type
 	 *
 	 */
-	public function testEnableAppForGroupsForbiddenTypes($type) {
+	public function testEnableAppForGroupsForbiddenTypes($type): void {
 		$this->expectException(\Exception::class);
 		$this->expectExceptionMessage('test can\'t be enabled for groups.');
 
@@ -312,34 +312,34 @@ class ManagerTest extends TestCase {
 		$manager->enableAppForGroups('test', $groups);
 	}
 
-	public function testIsInstalledEnabled() {
+	public function testIsInstalledEnabled(): void {
 		$this->appConfig->setValue('test', 'enabled', 'yes');
 		$this->assertTrue($this->manager->isInstalled('test'));
 	}
 
-	public function testIsInstalledDisabled() {
+	public function testIsInstalledDisabled(): void {
 		$this->appConfig->setValue('test', 'enabled', 'no');
 		$this->assertFalse($this->manager->isInstalled('test'));
 	}
 
-	public function testIsInstalledEnabledForGroups() {
+	public function testIsInstalledEnabledForGroups(): void {
 		$this->appConfig->setValue('test', 'enabled', '["foo"]');
 		$this->assertTrue($this->manager->isInstalled('test'));
 	}
 
-	public function testIsEnabledForUserEnabled() {
+	public function testIsEnabledForUserEnabled(): void {
 		$this->appConfig->setValue('test', 'enabled', 'yes');
 		$user = $this->createMock(IUser::class);
 		$this->assertTrue($this->manager->isEnabledForUser('test', $user));
 	}
 
-	public function testIsEnabledForUserDisabled() {
+	public function testIsEnabledForUserDisabled(): void {
 		$this->appConfig->setValue('test', 'enabled', 'no');
 		$user = $this->createMock(IUser::class);
 		$this->assertFalse($this->manager->isEnabledForUser('test', $user));
 	}
 
-	public function testIsEnabledForUserEnabledForGroup() {
+	public function testIsEnabledForUserEnabledForGroup(): void {
 		$user = $this->createMock(IUser::class);
 		$this->groupManager->expects($this->once())
 			->method('getUserGroupIds')
@@ -350,7 +350,7 @@ class ManagerTest extends TestCase {
 		$this->assertTrue($this->manager->isEnabledForUser('test', $user));
 	}
 
-	public function testIsEnabledForUserDisabledForGroup() {
+	public function testIsEnabledForUserDisabledForGroup(): void {
 		$user = $this->createMock(IUser::class);
 		$this->groupManager->expects($this->once())
 			->method('getUserGroupIds')
@@ -361,12 +361,12 @@ class ManagerTest extends TestCase {
 		$this->assertFalse($this->manager->isEnabledForUser('test', $user));
 	}
 
-	public function testIsEnabledForUserLoggedOut() {
+	public function testIsEnabledForUserLoggedOut(): void {
 		$this->appConfig->setValue('test', 'enabled', '["foo"]');
 		$this->assertFalse($this->manager->isEnabledForUser('test'));
 	}
 
-	public function testIsEnabledForUserLoggedIn() {
+	public function testIsEnabledForUserLoggedIn(): void {
 		$user = $this->createMock(IUser::class);
 
 		$this->userSession->expects($this->once())
@@ -381,7 +381,7 @@ class ManagerTest extends TestCase {
 		$this->assertTrue($this->manager->isEnabledForUser('test'));
 	}
 
-	public function testGetInstalledApps() {
+	public function testGetInstalledApps(): void {
 		$this->appConfig->setValue('test1', 'enabled', 'yes');
 		$this->appConfig->setValue('test2', 'enabled', 'no');
 		$this->appConfig->setValue('test3', 'enabled', '["foo"]');
@@ -395,7 +395,7 @@ class ManagerTest extends TestCase {
 		], $this->manager->getInstalledApps());
 	}
 
-	public function testGetAppsForUser() {
+	public function testGetAppsForUser(): void {
 		$user = $this->createMock(IUser::class);
 		$this->groupManager
 			->method('getUserGroupIds')
@@ -416,7 +416,7 @@ class ManagerTest extends TestCase {
 		], $this->manager->getEnabledAppsForUser($user));
 	}
 
-	public function testGetAppsNeedingUpgrade() {
+	public function testGetAppsNeedingUpgrade(): void {
 		$this->platform->method('getOcVersion')->willReturn('8.2.0');
 		$this->manager = $this->getMockBuilder(AppManager::class)
 			->setConstructorArgs([$this->userSession, $this->appConfig,
@@ -466,7 +466,7 @@ class ManagerTest extends TestCase {
 	 * @param bool $canInstall
 	 * @param string $opsMode
 	 */
-	public function testCanInstall($canInstall, $opsMode) {
+	public function testCanInstall($canInstall, $opsMode): void {
 		$this->config->expects($this->once())->method('getSystemValue')->willReturn($opsMode);
 		$this->assertEquals($canInstall, $this->manager->canInstall());
 	}
@@ -485,7 +485,7 @@ class ManagerTest extends TestCase {
 	 * @param string $secondDirVersion
 	 * @param bool $isFirstWinner
 	 */
-	public function testTheMostRecentAppIsFound($firstDirVersion, $secondDirVersion, $isFirstWinner) {
+	public function testTheMostRecentAppIsFound($firstDirVersion, $secondDirVersion, $isFirstWinner): void {
 		$appId = 'bogusapp';
 		$appsParentDir = vfsStream::setup();
 		$firstAppDir = vfsStream::newDirectory('apps')->at($appsParentDir);
@@ -527,7 +527,7 @@ class ManagerTest extends TestCase {
 		];
 	}
 
-	public function testPathIsNotCachedForNotFoundApp() {
+	public function testPathIsNotCachedForNotFoundApp(): void {
 		$appId = 'notexistingapp';
 
 		$appManager = $this->getMockBuilder(AppManager::class)
@@ -554,7 +554,7 @@ class ManagerTest extends TestCase {
 	 * @param string $expectedAppWebPath
 	 */
 	public function testAppWebRootAboveOcWebRoot($ocWebRoot, $appData,
-		$expectedAppWebPath) {
+		$expectedAppWebPath): void {
 		$appId = 'notexistingapp';
 
 		$appManager = $this->getMockBuilder(AppManager::class)
