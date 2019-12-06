@@ -92,7 +92,7 @@ class CreateUserService {
 	 * @throws UserAlreadyExistsException
 	 */
 	public function createUser($arguments) {
-		$username = $password = $email = '';
+		$password = $email = '';
 		if (\array_key_exists('username', $arguments)) {
 			$username = $arguments['username'];
 		} else {
@@ -125,7 +125,7 @@ class CreateUserService {
 			}
 			$user = $this->userManager->createUser($username, $password);
 		} catch (\Exception $exception) {
-			throw new CannotCreateUserException("Unable to create user due to exception: {$exception->getMessage()}");
+			throw new CannotCreateUserException($exception->getMessage());
 		}
 
 		if ($user === false) {

@@ -140,7 +140,7 @@ class CreateUserServiceTest extends TestCase {
 	}
 
 	/**
-	 * @expectedExceptionMessage Unable to create user due to exception:
+	 * @expectedExceptionMessage Exception Message
 	 * @expectedException  \OCP\User\Exceptions\CannotCreateUserException
 	 */
 	public function testUserCreateException() {
@@ -151,7 +151,7 @@ class CreateUserServiceTest extends TestCase {
 			->willReturn(false);
 
 		$this->userManager->method('createUser')
-			->willThrowException(new \Exception());
+			->willThrowException(new \Exception("Exception Message"));
 		$this->createUserService->createUser(['username' => 'foo', 'password' => '', 'email' => 'foo@bar.com']);
 	}
 
