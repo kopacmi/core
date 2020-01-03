@@ -66,6 +66,11 @@ class WebUILoginContext extends RawMinkContext implements Context {
 		return "Files - " . $this->featureContext->getProductNameFromStatus();
 	}
 
+	/**
+	 * after a successful login we always end up on the Files Page
+	 *
+	 * @return void
+	 */
 	public function webUILoginShouldHaveBeenSuccessful() {
 		$actualTitle = $this->getLoginSuccessPageTitle();
 		$expectedTitle = 'Files - ownCloud';
@@ -84,6 +89,9 @@ class WebUILoginContext extends RawMinkContext implements Context {
 		return $this->featureContext->getProductNameFromStatus();
 	}
 
+	/**
+	 * @return void
+	 */
 	public function webUILoginShouldHaveBeenUnsuccessful() {
 		$actualTitle = $this->getLoginFailedPageTitle();
 		$expectedTitle = 'ownCloud';
